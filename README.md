@@ -14,6 +14,10 @@ Resoluciones de las guías de ejercicios.
 - [Práctica 1](<./Practicas/Practica 1>)
 - [Práctica 2](<./Practicas/Practica 2>)
 - [Práctica 3](<./Practicas/Practica 3>)
+- [Práctica 4](<./Practicas/Practica 4>)
+- [Práctica 5](<./Practicas/Practica 5>)
+- [Práctica 6](<./Practicas/Practica 6>)
+- [Práctica 7](<./Practicas/Practica 7>)
 - [Guías Resueltas 2019](<./Practicas/Guias resueltas (2019).pdf>)
 - [Datos](<./Practicas/Datos>)
 
