@@ -11,15 +11,15 @@ Código y materiales de las clases prácticas.
 
 ## Guías
 Resoluciones de las guías de ejercicios.
-- [Guía 1](<./Practicas/Guía 1>)
-- [Guía 2](<./Practicas/Guía 2>)
-- [Guía 3](<./Practicas/Guía 3>)
-- [Guía 4](<./Practicas/Guía 4>)
-- [Guía 5](<./Practicas/Guía 5>)
-- [Guía 6](<./Practicas/Guía 6>)
-- [Guía 7](<./Practicas/Guía 7>)
-- [Guías Resueltas 2019](<./Practicas/Guias resueltas (2019).pdf>)
-- [Datos](<./Practicas/Datos>)
+- [Guía 1](<./Guías/Guía 1>)
+- [Guía 2](<./Guías/Guía 2>)
+- [Guía 3](<./Guías/Guía 3>)
+- [Guía 4](<./Guías/Guía 4>)
+- [Guía 5](<./Guías/Guía 5>)
+- [Guía 6](<./Guías/Guía 6>)
+- [Guía 7](<./Guías/Guía 7>)
+- [Guías Resueltas 2019](<./Guías/Guias resueltas (2019).pdf>)
+- [Datos](<./Guías/Datos>)
 
 ## Parciales
 - [1er Parcial](<./Parciales/1 Parciales>)
