@@ -9,15 +9,15 @@ Diapositivas de clases teóricas.
 Código y materiales de las clases prácticas.
 - [Clases Prácticas](<./Clases practicas>)
 
-## Prácticas
+## Guías
 Resoluciones de las guías de ejercicios.
-- [Práctica 1](<./Practicas/Practica 1>)
-- [Práctica 2](<./Practicas/Practica 2>)
-- [Práctica 3](<./Practicas/Practica 3>)
-- [Práctica 4](<./Practicas/Practica 4>)
-- [Práctica 5](<./Practicas/Practica 5>)
-- [Práctica 6](<./Practicas/Practica 6>)
-- [Práctica 7](<./Practicas/Practica 7>)
+- [Guía 1](<./Practicas/Guía 1>)
+- [Guía 2](<./Practicas/Guía 2>)
+- [Guía 3](<./Practicas/Guía 3>)
+- [Guía 4](<./Practicas/Guía 4>)
+- [Guía 5](<./Practicas/Guía 5>)
+- [Guía 6](<./Practicas/Guía 6>)
+- [Guía 7](<./Practicas/Guía 7>)
 - [Guías Resueltas 2019](<./Practicas/Guias resueltas (2019).pdf>)
 - [Datos](<./Practicas/Datos>)
 
