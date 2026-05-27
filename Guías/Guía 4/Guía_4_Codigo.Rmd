@@ -1,0 +1,417 @@
+---
+title: "\\textbf{Práctica 4 - Bootstrap}"
+author: "\\textbf{Rodrigo Quirno Costa}"
+date: "\\textbf{11/05/2026}"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+header-includes:
+  - \usepackage{xcolor}
+  - \usepackage{framed}
+  - \definecolor{shadecolor}{RGB}{232, 238, 246}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo    = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	comment = ""
+)
+library(knitr)
+```
+
+# 2. Emisión partículas radiactivas (Bootsrap paramétrico)
+
+```{r, fig.width=6, fig.height=3, fig.align='center'}
+rm(list = ls())
+set.seed(42)
+
+obs <- c(500, 488, 426, 510, 450, 368, 508, 514, 
+         426, 476, 512, 526, 444, 524, 236)
+
+n <- length(obs)
+B <- 1000
+
+T_1 <- function(data) {
+  (1 / length(data)) * sum(data)
+} 
+
+T_2 <- function(data) {
+  (- 1 + sqrt(1 + 4 * mean(data^2))) / 2
+} 
+
+boot_1 <- replicate(B, {        # vector de long B
+  x_boot <- rpois(n, T_1(obs))  # muestra Poisson(T_1(obs)) de tamaño n
+  T_1(x_boot)                   # calcula T_1 sobre esa muestra
+})
+
+boot_2 <- replicate(B, {
+  x_boot <- rpois(n, T_2(obs))
+  T_2(x_boot)
+})
+
+par(mfrow = c(1, 2),
+    mar   = c(3, 3, 2, 1),
+    mgp   = c(2, 0.7, 0))
+
+hist(boot_1,
+     breaks   = 25,
+     main     = expression("Bootstrap de " * T[1]),
+     xlab     = expression(T[1]),
+     col      = "firebrick",
+     border   = "white",
+     cex.main = 0.8,
+     cex.lab  = 0.8,
+     cex.axis = 0.8,
+     las      = 1
+)
+
+hist(boot_2,
+     breaks   = 25,
+     main     = expression("Bootstrap de " * T[2]),
+     xlab     = expression(T[2]),
+     col      = "steelblue",
+     border   = "white",
+     cex.main = 0.8,
+     cex.lab  = 0.8,
+     cex.axis = 0.8,
+     las      = 1
+)
+
+var_T_1 <- var(boot_1)
+var_T_2 <- var(boot_2)
+```
+
+$\widehat{\text{Var}}(T_1) =$ `r round(var_T_1, 4)`
+
+$\widehat{\text{Var}}(T_2) =$ `r round(var_T_2, 4)`
+
+------------------------------------------------------------------------
+
+# 3. Estimación del desvío estándar de estimadores de Media y Mediana con bootstrap.
+
+```{r}
+rm(list = ls())
+set.seed(42)
+
+datos <- scan("../datos/datos1.txt", skip = 1)
+n <- length(datos)
+B <- 1000
+
+media_obs  <- mean(datos)
+mediana_obs <- median(datos)
+
+boot_media <- replicate(B, {        
+  x_boot <- sample(datos, n, replace = TRUE) # sample de muestra original
+  mean(x_boot)
+})
+
+boot_mediana <- replicate(B, {        
+  x_boot <- sample(datos, n, replace = TRUE)
+  median(x_boot)
+})
+
+se_media   <- sd(boot_media)
+se_mediana <- sd(boot_mediana)
+```
+
+$\bar{X} =$ `r round(media_obs, 2)`
+
+$\text{Me} =$ `r round(mediana_obs, 2)`
+
+$\widehat{\text{se}}_{boot}(\bar{X}) =$ `r round(se_media, 4)`
+
+$\widehat{\text{se}}_{boot}(\text{Me}) =$ `r round(se_mediana, 4)`
+
+------------------------------------------------------------------------
+
+# 4. Dado cargado
+
+a)  Resuelto en Clase práctica 4 - Bootstrap - Ejercicio 2
+
+b)  Probabilidad de que un resultado del dado sea exactamente igual a 5.
+
+La diferencia lógica es la siguiente:
+
+$P(X=5)=\frac16$
+
+no alcanza para demostrar que el dado sea equilibrado, ya que podrían existir otras caras con probabilidades distintas de $\frac16$.
+
+Sin embargo,
+
+$P(X=5)\neq\frac16$
+
+sí alcanza para concluir que el dado no es equilibrado, porque un dado equilibrado debe satisfacer
+
+$$
+P(X=i)=\frac16, \qquad i=1,\dots,6.
+$$
+
+```{r, fig.width=3, fig.height=3, fig.align='center'}
+rm(list = ls())
+set.seed(42)
+
+x <- c(
+  2, 2, 4, 6, 1, 3, 1, 3, 2, 4, 4, 4, 4, 4, 6, 3, 3, 4, 1, 2, 1, 6, 3, 2, 3,
+  4, 1, 1, 5, 4, 1, 4, 6, 4, 1, 2, 1, 5, 4, 3, 3, 1, 3, 1, 6, 5, 1, 3, 2, 3, 
+  6, 2, 4, 2, 6, 6, 5, 2, 4, 4, 1, 4, 3, 1, 2, 1, 6, 1, 1, 3, 1, 6, 6, 1, 2, 
+  6, 1, 1, 4, 5, 4, 1, 5, 2, 2, 1, 6, 6, 1, 2, 1, 3, 1, 3, 3, 4, 3, 3, 3, 5
+)
+
+n <- length(x)
+
+# estimacion puntual
+theta_hat <- mean(x == 5)
+# si fuese equilibrado esperariamos θ = 1/6 ≈ 0.1666...
+
+B <- 5000
+thetas_boot <- replicate(B, {
+  xboot <- sample(x, n, replace = TRUE)
+  mean(xboot == 5)
+})
+
+par(mar   = c(3, 3, 2, 1),
+    mgp   = c(2, 0.7, 0))
+
+hist(thetas_boot,
+     freq     = FALSE,
+     breaks   = 20,
+     main     = expression("Distribucion bootstrap de " * hat(theta)),
+     xlab     = expression(hat(theta)^"*"),
+     ylab     = "Densidad",
+     col      = "firebrick",
+     border   = "white",
+     cex.main = 0.8,
+     cex.lab  = 0.8,
+     cex.axis = 0.8,
+     las      = 1
+)
+abline(v = theta_hat, col = "darkred", lwd = 2) # estimador puntual original
+```
+
+```{r}
+se_boot <- sd(thetas_boot)
+```
+
+$\widehat{\text{se}}_{boot}(\hat{\theta}) =$ `r round(se_boot, 4)`
+
+```{r}
+nivel <- 0.95
+
+ic_normal <- c(
+  theta_hat - qnorm((1 + nivel) / 2) * se_boot,
+  theta_hat + qnorm((1 + nivel) / 2) * se_boot
+)
+```
+
+Si el dado fuera equilibrado se esperaría $\theta = 1/6 \approx 0.1667$. El intervalo bootstrap normal de nivel 0.95 es $\left[`r round(ic_normal[1], 4)`,\, `r round(ic_normal[2], 4)`\right]$. Como $1/6$ `r ifelse(1/6 >= ic_normal[1] & 1/6 <= ic_normal[2], "\\textbf{cae}", "\\textbf{no cae}")` dentro del IC, `r ifelse(1/6 >= ic_normal[1] & 1/6 <= ic_normal[2], "no hay", "hay")` evidencia de que `r ifelse(1/6 >= ic_normal[1] & 1/6 <= ic_normal[2], "el dado pueda llegar a ser equilibrado.", "el dado no es equilibrado.")`
+
+```{r}
+ic_percentil <- quantile(thetas_boot, c(0.025, 0.975))
+```
+
+El intervalo percentil bootstrap de nivel 0.95 es $\left[`r round(ic_percentil[1], 4)`,\, `r round(ic_percentil[2], 4)`\right]$. Como $1/6$ `r ifelse(1/6 >= ic_percentil[1] & 1/6 <= ic_percentil[2], "\\textbf{cae}", "\\textbf{no cae}")` dentro del IC, `r ifelse(1/6 >= ic_percentil[1] & 1/6 <= ic_percentil[2], "no hay", "hay")` evidencia de que `r ifelse(1/6 >= ic_percentil[1] & 1/6 <= ic_percentil[2], "el dado pueda llegar a ser equilibrado.", "el dado no es equilibrado.")`
+
+------------------------------------------------------------------------
+
+# 5. Mustangs usados (Precio vs kilometraje)
+
+```{r, fig.width=3, fig.height=3, fig.align='center'}
+rm(list = ls())
+#install.packages("Lock5Data")
+library(Lock5Data)
+
+data("MustangPrice")
+
+par(mar   = c(3, 3, 2, 1),
+    mgp   = c(2, 0.7, 0))
+
+plot(MustangPrice$Miles, MustangPrice$Price,
+     xlab     = "Miles (millas)", 
+     ylab     = "Price (miles de USD)",
+     main     = "Price vs Miles – Mustangs usados",
+     pch      = 19, 
+     col      = "steelblue",
+     cex.main = 0.8,
+     cex.lab  = 0.8,
+     cex.axis = 0.8,
+     las      = 1
+)
+
+rho_hat <- cor(MustangPrice$Price, MustangPrice$Miles)
+```
+
+$\hat{\rho} =$ `r rho_hat`
+
+```{r fig.width=3, fig.height=3, fig.align='center'}
+boot_rho <- function(data) {
+  idx <- sample(nrow(data), replace = TRUE)
+  cor(data$Price[idx], data$Miles[idx]) 
+}
+
+set.seed(42)
+B <- 5000
+boot_dist <- replicate(B, boot_rho(MustangPrice))
+
+par(mar   = c(3, 3, 2, 1),
+    mgp   = c(2, 0.7, 0))
+
+hist(boot_dist,
+     breaks = 30,
+     main = expression("Distribucion bootstrap de "*hat(rho)*"* (B = 5000)"),
+     xlab = expression(hat(rho)*"*"),
+     col = "steelblue", 
+     border = "white",
+     cex.main = 0.8,
+     cex.lab  = 0.8,
+     cex.axis = 0.8,
+     las      = 1
+     )
+abline(v = rho_hat, col = "red", lwd = 2, lty = 2)
+
+legend("topright", 
+       legend = bquote(hat(rho) == .(round(rho_hat, 3))),
+       col = "red", lty = 2, lwd = 2, cex = 0.7)
+```
+
+El histograma muestra la distribución muestral aproximada de $\hat\rho^*$. Vemos que 
+
+- Forma aproximadamente normal (por el TCL aplicado a $\hat\rho$), quizás algo asimétrica hacia valores menos negativos porque $\rho$ está acotado en [−1, 1]. 
+- Centro cerca del $\hat\rho$ original (línea roja). 
+- La dispersión refleja la variabilidad del estimador con $n=25$.
+
+```{r}
+ic_percentil <- quantile(boot_dist, c(0.025, 0.975))
+```
+
+El intervalo percentil bootstrap de nivel 0.95 es $\left[`r round(ic_percentil[1], 4)`,\, `r round(ic_percentil[2], 4)`\right]$. Con un 95% de confianza, la correlación poblacional entre \textit{Price} y \textit{Miles} se encuentra en ese intervalo. Como el intervalo queda completamente en valores negativos, existe evidencia de una asociación negativa entre las variables: a mayor cantidad de kilómetros, menor tiende a ser el precio.
+
+------------------------------------------------------------------------
+
+# 7 Precios Mustangs usados
+
+```{r fig.width=3, fig.height=3, fig.align='center'}
+rm(list = ls())
+
+data("MustangPrice")
+precios <- MustangPrice$Price
+B <- 5000
+
+mediana <- median(precios)
+
+set.seed(42)
+boot_mediana <- replicate(B, {
+  xboot <- sample(precios, length(precios), replace = TRUE)
+  median(xboot)
+})
+
+par(mar   = c(3, 3, 2, 1),
+    mgp   = c(2, 0.7, 0))
+
+hist(boot_mediana,
+     breaks = 25,
+     main = "Distribución Bootstrap de la Mediana (Price)",
+     xlab = expression(hat(Med)*"*"),
+     col = "steelblue", 
+     border = "white",
+     cex.main = 0.8,
+     cex.lab  = 0.8,
+     cex.axis = 0.8,
+     las      = 1
+     )
+abline(v = mediana, col = "red", lwd = 2, lty = 2)
+
+legend("topright", 
+       legend = bquote(hat(Med) == .(round(mediana, 3))),
+       col = "red", lty = 2, lwd = 2, cex = 0.7)
+```
+
+b)  No es apropiado usar ninguna de las dos estrategias basadas en bootstrap para construir un intervalo de confianza en este caso porque la distribución resultante es demasiado irregular para representar bien la variabilidad real de la mediana.\\ En el histograma se observan discontinuidades, asimetrías y acumulación en ciertos valores, lo que indica que el bootstrap no está aproximando bien la distribución del estimador.
+
+c)  A diferencia de la mediana, la media es un funcional lineal (una integral): $$L(F) = \int x \, dF(x)$$ Este funcional es mucho más estable y "suave" ante las variaciones de la muestra, entonces veriamos un histograma mucho más cercano a una distribución Normal (por TCL), donde el bootstrap suele funcionar mucho mejor.
+
+------------------------------------------------------------------------
+
+# 8 Intervalos de confianza para mediana
+
+```{r}
+rm(list = ls())
+set.seed(42)
+
+bootMetodo1 <- function(nivel, B, x) {
+  se <- sd(replicate(B, {
+    xboot <- sample(x, length(x), replace = TRUE)
+    median(xboot)    # O(nlogn)
+  }))
+  
+  z <- qnorm((1 + nivel) / 2)
+  
+  c(median(x) - z * se,
+    median(x) + z * se)
+}
+
+bootMetodo2 <- function(nivel, B, x) {
+  boot_dist <- replicate(B, {
+    xboot <- sample(x, length(x), replace = TRUE)
+    median(xboot) 
+  })
+  
+  quantile(boot_dist, c((1 - nivel) / 2, (1 + nivel) / 2))
+}
+
+ns <- c(30, 50, 100, 1000)
+B  <- 2000      
+N  <- 1000
+nivel <- 0.95
+
+tabla_1 <- data.frame(
+  long = rep(NA, length(ns)),
+  cub  = rep(NA, length(ns))
+)
+
+tabla_2 <- data.frame(
+  long = rep(NA, length(ns)),
+  cub  = rep(NA, length(ns))
+)
+
+for (n in ns) {        # O(N*B*nlogn)
+  i <- which(ns == n)
+
+  # metodo 1
+  res_1 <- replicate(N, {
+    z  <- rnorm(n)  
+    ic <- bootMetodo1(nivel, B, z)
+    c(longitud    = as.numeric(ic[2] - ic[1]),
+      cubrimiento = as.numeric(ic[1] <= 0 & 0 <= ic[2]))
+  })
+  res_1
+  tabla_1[i, "long"] <- round(mean(res_1["longitud", ]), 3)
+  tabla_1[i, "cub"]  <- round(mean(res_1["cubrimiento", ]), 3)
+  
+  # metodo 2
+  res_2 <- replicate(N, {
+    z  <- rnorm(n)  
+    ic <- bootMetodo2(nivel, B, z)
+    c(longitud    = as.numeric(ic[2] - ic[1]),
+      cubrimiento = as.numeric(ic[1] <= 0 & 0 <= ic[2]))
+  })
+  
+  tabla_2[i, "long"] <- round(mean(res_2["longitud", ]), 3)
+  tabla_2[i, "cub"]  <- round(mean(res_2["cubrimiento", ]), 3)
+}
+
+colnames(tabla_1) <- c("Longitud promedio", "Cubrimiento empirico")
+kable(t(tabla_1),
+      caption   = "Intervalos bootstrap normal para la mediana",
+      col.names = paste("n =", ns),
+      align     = rep("c", length(ns))
+)
+
+colnames(tabla_2) <- c("Longitud promedio", "Cubrimiento empirico")
+kable(t(tabla_2),
+      caption   = "Intervalos percentil bootstrap para la mediana",
+      col.names = paste("n =", ns),
+      align     = rep("c", length(ns))
+)
+```
