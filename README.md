@@ -26,7 +26,11 @@ Resoluciones de las guías de ejercicios.
 - [2do Parcial](<./Parciales/2 Parciales>)
 
 ## Apuntes y Bibliografía
+- [Bianco-Martinez](<./Apuntes y Bibilografía/Bianco-Martinez.pdf>)
+- [Boente-Yohai](<./Apuntes y Bibilografía/Boente-Yohai.pdf>)
 - [Casella & Berger — Statistical Inference](<./Apuntes y Bibilografía/Casella_Berger_Statistical_Inference.pdf>)
+- [James, G., (2021). An Intro to Statistical Learning with Applications in R.](<./Apuntes y Bibilografía/James, G., (2021). An Intro to Statistical Learning with Applications in R..pdf>)
+- [John A. Rice - Mathematical Statistics and Data Analysis 3ed, 2006](<./Apuntes y Bibilografía/John A. Rice - Mathematical Statistics and Data Analysis 3ed, 2006.pdf>)
 - [Wasserman — All of Statistics](<./Apuntes y Bibilografía/Wasserman_All_of_Statistics.pdf>)
 - [Resumen distribuciones](<./Apuntes y Bibilografía/Resumen distribuciones.pdf>)
 - [Tabla Chi-cuadrado](<./Apuntes y Bibilografía/tabla_chicuadrado.pdf>)
