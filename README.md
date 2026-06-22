@@ -7,7 +7,7 @@ Diapositivas de clases teóricas.
 
 ## Clases Prácticas
 Código y materiales de las clases prácticas.
-- [Clases Prácticas](<./Clases practicas>)
+- [Clases Prácticas](<./Clases prácticas>)
 
 ## Guías
 Resoluciones de las guías de ejercicios.
@@ -26,9 +26,9 @@ Resoluciones de las guías de ejercicios.
 - [2do Parcial](<./Parciales/2 Parciales>)
 
 ## Apuntes y Bibliografía
-- [Casella & Berger — Statistical Inference](<./Apuntes y Bibilografia/Casella_Berger_Statistical_Inference.pdf>)
-- [Wasserman — All of Statistics](<./Apuntes y Bibilografia/Wasserman_All_of_Statistics.pdf>)
-- [Resumen distribuciones](<./Apuntes y Bibilografia/Resumen distribuciones.pdf>)
-- [Tabla Chi-cuadrado](<./Apuntes y Bibilografia/tabla_chicuadrado.pdf>)
-- [Tabla Normal](<./Apuntes y Bibilografia/tabla_normal.pdf>)
-- [Tabla Student](<./Apuntes y Bibilografia/tabla_student.pdf>)
+- [Casella & Berger — Statistical Inference](<./Apuntes y Bibilografía/Casella_Berger_Statistical_Inference.pdf>)
+- [Wasserman — All of Statistics](<./Apuntes y Bibilografía/Wasserman_All_of_Statistics.pdf>)
+- [Resumen distribuciones](<./Apuntes y Bibilografía/Resumen distribuciones.pdf>)
+- [Tabla Chi-cuadrado](<./Apuntes y Bibilografía/tabla_chicuadrado.pdf>)
+- [Tabla Normal](<./Apuntes y Bibilografía/tabla_normal.pdf>)
+- [Tabla Student](<./Apuntes y Bibilografía/tabla_student.pdf>)
