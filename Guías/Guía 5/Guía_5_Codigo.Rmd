@@ -1,0 +1,239 @@
+---
+title: "\\textbf{Práctica 5 - Tests de Hipótesis}"
+author: "\\textbf{Rodrigo Quirno Costa}"
+date: "\\textbf{03/06/2026}"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+header-includes:
+  - \usepackage{xcolor}
+  - \usepackage{framed}
+  - \definecolor{shadecolor}{RGB}{232, 238, 246}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo    = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	comment = ""
+)
+library(knitr)
+```
+
+# 5. Test normal
+
+a)
+```{r results='asis'}
+rm(list = ls())
+
+# a) 
+mu0   <- 100
+sigma <- 20
+n1     <- 16
+alpha <- 0.05
+
+z_alpha <- qnorm(1 - alpha)
+umbral <- mu0 + z_alpha * (sigma / sqrt(n1))
+```
+El valor crítico $z_{\alpha}$ es `r round(z_alpha, 2)`.
+
+La región de rechazo es $\{\bar{X}_n > `r round(umbral, 2)`\}$.
+
+b)
+```{r fig.width=6, fig.height=4, fig.align='center'}
+library(ggplot2)
+
+x_vals   <- seq(85, 125, length.out = 1000)
+mu1      <- 110
+
+dens_mu0 <- dnorm(x_vals, mean = mu0, sd = sigma / sqrt(n1))
+dens_mu1 <- dnorm(x_vals, mean = mu1, sd = sigma / sqrt(n1))
+
+df <- data.frame(
+  x       = rep(x_vals, 2),
+  densidad = c(dens_mu0, dens_mu1),
+  grupo   = factor(rep(c("mu = 100 (H0)", "mu = 110 (H1)"), each = length(x_vals)))
+)
+
+ggplot(df, aes(x = x, y = densidad, color = grupo)) +
+  geom_area(
+    data = subset(df, grupo == "mu = 110 (H1)" & x > umbral),
+    aes(x = x, y = densidad),
+    fill = "blue", alpha = 0.3, inherit.aes = FALSE
+  ) +
+  geom_area(
+    data = subset(df, grupo == "mu = 100 (H0)" & x > umbral),
+    aes(x = x, y = densidad),
+    fill = "red", alpha = 0.5, inherit.aes = FALSE
+  ) +
+  geom_line(linewidth = 1) +
+  geom_vline(xintercept = umbral, linetype = "dashed") +
+  labs(
+    title = expression(paste("Densidades de ", bar(X)[n], 
+                             " bajo ", H[0], " y ", H[1])),
+    subtitle = expression(paste("Área roja: nivel del test (", alpha, 
+                          "), Área azul: potencia del test")),
+    x        = expression(bar(X)[n]),
+    y        = "Densidad"
+  ) +
+  theme_minimal()
+
+potencia1 <- 1 - pnorm(umbral, mean = mu1, sd = sigma / sqrt(n1))
+```
+
+# c)
+```{r fig.width=6, fig.height=4, fig.align='center'}
+n2      <- 36
+umbral2 <- mu0 + z_alpha * (sigma / sqrt(n2))
+
+dens_mu0_n2 <- dnorm(x_vals, mean = mu0, sd = sigma / sqrt(n2))
+dens_mu1_n2 <- dnorm(x_vals, mean = mu1, sd = sigma / sqrt(n2))
+
+df2 <- data.frame(
+  x        = rep(x_vals, 2),
+  densidad = c(dens_mu0_n2, dens_mu1_n2),
+  grupo    = factor(rep(c("mu = 100 (H0), n = 36", 
+                          "mu = 110 (H1), n = 36"), 
+                        each = length(x_vals)))
+)
+
+ggplot() +
+  geom_line(data = df,  aes(x = x, y = densidad, color = grupo), 
+            linewidth = 1) +
+  geom_line(data = df2, aes(x = x, y = densidad, linetype = grupo), 
+            linewidth = 1, color = "black") +
+  geom_vline(xintercept = umbral,  linetype = "dashed") +   # n=16
+  geom_vline(xintercept = umbral2, linetype = "dotted") +   # n=36
+  labs(
+    title    = "Comparación de densidades para n = 16 y n = 36",
+    subtitle = "Densidades originales en color, nuevas en línea negra",
+    x        = expression(bar(X)[n]),
+    y        = "Densidad"
+  ) +
+  theme_minimal()
+
+potencia2 <- 1 - pnorm(umbral2, mean = mu1, sd = sigma / sqrt(n2))
+```
+La potencia del test con $n = 36$ es `r round(potencia2, 4)`, frente a `r round(potencia1, 4)` con $n = 16$.
+
+------------------------------------------------------------------------
+
+# 9. Tests asintoticos basados en Máxima Versoimilitud
+
+```{r fig.width=5, fig.height=5, fig.align='center'}
+n     <- 50 
+p0    <- 0.3 
+alpha <- 0.05 
+z     <- qnorm(1 - alpha/2)
+p     <- seq(1e-3, 1-1e-3, length.out = 1000)
+
+# desvio estandar
+sp    <- sqrt(p*(1 - p)/n)   # bajo H1
+s0    <- sqrt(p0*(1 - p0)/n) # bajo H0
+
+# Test Score (a): region |Xbar - p0| > z*s0
+pot_score <- 1 - pnorm((p0 + z*s0 - p) / sp) + pnorm((p0 - z*s0 - p) / sp)
+
+
+# Test Wald (b): region |Xbar - p0| > z*s_hat
+pot_wald <- function(p) {
+  
+  # Simulamos x_barra
+  xbars <- rnorm(10000, mean = p, sd = sqrt(p*(1 - p)/n))
+  # Evitamos división por cero
+  s_hat <- sqrt(pmax(1e-3, xbars*(1-xbars)) / n)
+  t_wald <- (xbars - p0) / s_hat
+  
+  mean(abs(t_wald) > z)
+}
+
+# LRT (c): X_barra ~ N(p_real, p_real*(1-p_real)/n)
+c_critico <- qchisq(1 - alpha, 1) # Valor crítico de la Chi-cuadrado
+
+pot_LRT <- function(p) {
+  
+  # Simulamos x_barra
+  xbars <- rnorm(10000, mean = p, sd = sqrt(p*(1 - p)/n))
+  
+  # Calculamos el estadístico LRT para cada xbar
+  # Manejamos los casos donde x_barra es 0 o 1 (evitar log(0))
+  xbars <- pmax(1e-3, pmin(1-1e-3, xbars))
+  
+  lrt_stats <- 2 * n * (xbars * log(xbars / p0) + 
+               (1 - xbars) * log((1 - xbars) / (1 - p0)))
+  
+  # La potencia es la proporción de veces que rechazamos
+  mean(lrt_stats > c_critico)
+}
+
+par(mar   = c(3, 3, 2, 1),
+    mgp   = c(2, 0.7, 0))
+
+plot(p, pot_score, 
+     type = "l", 
+     lwd  = 2, 
+     col  = "steelblue", 
+     ylim = c(0, 1),
+     xlab = "p", 
+     ylab = expression(pi(p)),
+     main = "Potencia aproximada (n=50, p0=0.3)")
+
+lines(p, sapply(p, pot_wald), 
+      lwd = 2, 
+      col = "tomato", 
+      lty = 2)
+
+lines(p, sapply(p, pot_LRT), 
+      lwd = 2, 
+      col = "#2ECC71", 
+      lty = 4 )
+
+abline(h = alpha, v = p0, lty = 3)
+
+legend("bottomright", c("a) W (Score)","b) T (Wald)", "c) LRT"),
+       col = c("steelblue", "tomato", "#2ECC71"), lwd = 2, lty = c(1,2,4))
+```
+
+------------------------------------------------------------------------
+
+# 12. Test procedimiento secuencial
+```{r results='asis'}
+set.seed(123)
+
+## Parámetros del procedimiento
+n1   <- 20            # "espiada" intermedia
+n2   <- 30            # muestra total
+z    <- qnorm(0.95)   # valor de corte z_{0.05} = 1.6449...
+Nsim <- 1e5
+
+## Simula Nsim veces el procedimiento secuencial del científico
+## y devuelve la proporción de rechazos cuando X ~ N(mu, 1).
+potencia <- function(mu, Nsim = 1e5) {
+  X   <- matrix(rnorm(Nsim * n2, mean = mu, sd = 1), 
+                nrow = Nsim, ncol = n2)
+  
+  T20 <- sqrt(n1) * rowMeans(X[, 1:n1])   # estadístico con las primeras 20
+  T30 <- sqrt(n2) * rowMeans(X)           # estadístico con las 30
+  # rechaza si CUALQUIERA de las dos miradas supera el corte:
+  mean( (T20 > z) | (T30 > z) )
+}
+
+## a) nivel REAL del procedimiento (bajo H0: mu = 0)
+potencia(0)
+
+## b) función de potencia evaluada en varios mu
+mus   <- c(0.5, 1, 2, 5, 10)
+pi_mu <- sapply(mus, potencia)
+
+resultados <- data.frame(mu = mus, potencia = round(pi_mu, 4))
+
+kable(resultados,
+      caption   = "Función de potencia del procedimiento secuencial",
+      col.names = c("$\\mu$", "$\\pi(\\mu)$"),
+      align     = c("c","c"),
+      digits    = 6,
+      row.names = FALSE
+)
+```
+

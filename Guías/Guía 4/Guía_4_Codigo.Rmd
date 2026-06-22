@@ -275,11 +275,11 @@ legend("topright",
        col = "red", lty = 2, lwd = 2, cex = 0.7)
 ```
 
-El histograma muestra la distribución muestral aproximada de $\hat\rho^*$. Vemos que 
+El histograma muestra la distribución muestral aproximada de $\hat\rho^*$. Vemos que
 
-- Forma aproximadamente normal (por el TCL aplicado a $\hat\rho$), quizás algo asimétrica hacia valores menos negativos porque $\rho$ está acotado en [−1, 1]. 
-- Centro cerca del $\hat\rho$ original (línea roja). 
-- La dispersión refleja la variabilidad del estimador con $n=25$.
+-   Forma aproximadamente normal (por el TCL aplicado a $\hat\rho$), quizás algo asimétrica hacia valores menos negativos porque $\rho$ está acotado en [−1, 1].
+-   Centro cerca del $\hat\rho$ original (línea roja).
+-   La dispersión refleja la variabilidad del estimador con $n=25$.
 
 ```{r}
 ic_percentil <- quantile(boot_dist, c(0.025, 0.975))
@@ -361,8 +361,8 @@ bootMetodo2 <- function(nivel, B, x) {
 }
 
 ns <- c(30, 50, 100, 1000)
-B  <- 2000      
-N  <- 1000
+B  <- 200    # probar con mas, le baje pq sino el knit tardaba  
+N  <- 100    # este tamb
 nivel <- 0.95
 
 tabla_1 <- data.frame(
