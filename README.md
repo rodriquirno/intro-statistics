@@ -2,8 +2,8 @@
 
 ## Teóricas
 Diapositivas de clases teóricas.
-- [Teóricas 2025](<./Teoricas/Teoricas 2025>)
-- [Teóricas 2026](<./Teoricas/Teoricas 2026>)
+- [Teóricas 2025](<./Teóricas/Teoricas 2025>)
+- [Teóricas 2026](<./Teóricas/Teoricas 2026>)
 
 ## Clases Prácticas
 Código y materiales de las clases prácticas.
