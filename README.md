@@ -1,5 +1,8 @@
 # Introducción a la Estadística y Ciencia de Datos 1C 2026 — Material de Cursada
 
+## Drive
+https://drive.google.com/drive/folders/1fG47J5DnCWGnJByfw5C6YjNVJSpMLOAp?usp=sharing
+
 ## Teóricas
 Diapositivas de clases teóricas.
 - [Teóricas 2025](<./Teóricas/Teoricas 2025>)
