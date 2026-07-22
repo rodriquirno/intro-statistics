@@ -79,7 +79,11 @@ pred_c <- exp(predict(mod_c, newdata = newdata))
 pred_d <- exp(predict(mod_d, newdata = newdata))
 
 # Configurar la ventana gráfica (1 fila, 1 columna)
-par(mfrow = c(1, 1))
+par(
+  mar = c(4, 4, 1, 1),      # margenes: abajo, izq, arriba, der
+  mgp = c(2.2, 0.7, 0),     # acerca titulos de ejes y ticks
+  cex.lab = 1.1, cex.axis = 0.9
+)
 
 # Trazar el gráfico de dispersión original
 plot(glakes$Tonnage, glakes$Time, 
